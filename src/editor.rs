@@ -250,7 +250,7 @@ impl Editor {
 
     fn deserialize(&mut self) -> u64 {
         let mut total = 0;
-        match self.local_replica.as_ref().unwrap().read() {
+        match self.local_replica.as_ref().unwrap().read(None) {
             Ok(data) => {
                 self.rows.clear();
                 let rows = data.get("\u{0394}rows\u{266D}").unwrap().as_array().unwrap();
@@ -620,7 +620,7 @@ impl Editor {
                                 .unwrap()
                                 .meld(&self.local_replica.as_ref().unwrap())
                                 .expect("meld_to_remote_failed");
-                            Ok(bid)
+                            Ok(bid.first().map_or("Nothing", |v| v).to_string())
                         }
                         None => Ok("Nothing".to_string()),
                     }
